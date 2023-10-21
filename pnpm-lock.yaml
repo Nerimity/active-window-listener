@@ -1,0 +1,119 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  exiftool-vendored:
+    specifier: ^14.6.2
+    version: 14.6.2
+  node-window-manager:
+    specifier: ^2.2.4
+    version: 2.2.4
+
+devDependencies:
+  '@types/luxon':
+    specifier: ^1.27.1
+    version: 1.27.1
+  '@types/node':
+    specifier: ^20.8.7
+    version: 20.8.7
+  typescript:
+    specifier: ^5.2.2
+    version: 5.2.2
+
+packages:
+
+  /@types/luxon@1.27.1:
+    resolution: {integrity: sha512-cPiXpOvPFDr2edMnOXlz3UBDApwUfR+cpizvxCy0n3vp9bz/qe8BWzHPIEFcy+ogUOyjKuCISgyq77ELZPmkkg==}
+    dev: true
+
+  /@types/node@20.8.7:
+    resolution: {integrity: sha512-21TKHHh3eUHIi2MloeptJWALuCu5H7HQTdTrWIFReA8ad+aggoX+lRes3ex7/FtpC+sVUpFMQ+QTfYr74mruiQ==}
+    dependencies:
+      undici-types: 5.25.3
+    dev: true
+
+  /batch-cluster@6.2.1:
+    resolution: {integrity: sha512-bXvQacBetyYc72WEeVhPiNnqdmGNj40SbviXUgg1S9+jrr+gGmgJz+JsmfL9zU1N7EIoyO8oks004MQvTlHwJQ==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
+  /exiftool-vendored.exe@12.67.0:
+    resolution: {integrity: sha512-wzgMDoL/VWH34l38g22cVUn43mVFtTSVj0HRjfjR46+4fGwpSvSueeYbwLCZ5NvBAVINCS5Rz9Rl2DVmqoIjsw==}
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /exiftool-vendored.pl@12.67.0:
+    resolution: {integrity: sha512-Jvjkv4Cad+Bnp/4PuLEhO2BSpKy0MBccmq8if/H8V2ykssZrpUh8DRwEJkONnsaNX7dqKfObbOFig3vwoDyXsA==}
+    os: ['!win32']
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /exiftool-vendored@14.6.2:
+    resolution: {integrity: sha512-BQ7YKjRKApTaI1ovZoDKqKVxd3YMGG0/9HnJwXQ253BYM5O4mtT7J0WPew6iCRQIYV2fCeaZomuu6knjnX0dYg==}
+    dependencies:
+      batch-cluster: 6.2.1
+      he: 1.2.0
+      luxon: 1.28.1
+      tz-lookup: 6.1.25
+    optionalDependencies:
+      exiftool-vendored.exe: 12.67.0
+      exiftool-vendored.pl: 12.67.0
+    dev: false
+
+  /extract-file-icon@0.3.2:
+    resolution: {integrity: sha512-We5/HaMDlioOx3c9zDjit8RtKWEvT94sJF8jTujaKVOyWL8Kkqu4QGnwDr5fID6XsbKvWT0JJNuWuV2Tmr7yiw==}
+    requiresBuild: true
+    dependencies:
+      node-addon-api: 1.7.1
+    dev: false
+
+  /he@1.2.0:
+    resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
+    hasBin: true
+    dev: false
+
+  /luxon@1.28.1:
+    resolution: {integrity: sha512-gYHAa180mKrNIUJCbwpmD0aTu9kV0dREDrwNnuyFAsO1Wt0EVYSZelPnJlbj9HplzXX/YWXHFTL45kvZ53M0pw==}
+    dev: false
+
+  /node-addon-api@1.7.1:
+    resolution: {integrity: sha512-2+DuKodWvwRTrCfKOeR24KIc5unKjOh8mz17NCzVnHWfjAdDqbfbjqh7gUT+BkXBRQM52+xCHciKWonJ3CbJMQ==}
+    dev: false
+
+  /node-addon-api@2.0.0:
+    resolution: {integrity: sha512-ASCL5U13as7HhOExbT6OlWJJUV/lLzL2voOSP1UVehpRD8FbSrSDjfScK/KwAvVTI5AS6r4VwbOMlIqtvRidnA==}
+    dev: false
+
+  /node-gyp-build@4.6.1:
+    resolution: {integrity: sha512-24vnklJmyRS8ViBNI8KbtK/r/DmXQMRiOMXTNz2nrTnAYUwjmEEbnnpB/+kt+yWRv73bPsSPRFddrcIbAxSiMQ==}
+    hasBin: true
+    dev: false
+
+  /node-window-manager@2.2.4:
+    resolution: {integrity: sha512-Dgq9a7qx6+Gi+BifWM79leteNz76QUtwSsdiqEe7SjvoJsc8TYQsRl1IA5uxqz5iSLeHS1iA/8YI/snoq0DblA==}
+    requiresBuild: true
+    dependencies:
+      extract-file-icon: 0.3.2
+      node-addon-api: 2.0.0
+      node-gyp-build: 4.6.1
+    dev: false
+
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /tz-lookup@6.1.25:
+    resolution: {integrity: sha512-fFewT9o1uDzsW1QnUU1ValqaihFnwiUiiHr1S79/fxOzKXYYvX+EHeRnpvQJ9B3Qg67wPXT6QF2Esc4pFOrvLg==}
+    dev: false
+
+  /undici-types@5.25.3:
+    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
+    dev: true
