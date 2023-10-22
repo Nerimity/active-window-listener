@@ -5,12 +5,11 @@ This will be used in https://nertivia.tk (My chat web app project) in the future
 
 ## Usage
 ```js
-const { ProcessListen } = require("active-window-listener");
+const { ProcessListener } = require("active-window-listener");
+const listener = new ProcessListener(["Discord.exe", "Telegram.exe", "Code.exe"]);
 
-const listener = new ProcessListen(["Discord.exe", "Telegram.exe", "Code.exe"]);
-
-listener.changed(data => {
-    console.log("Active: ", data)
+listener.on("change", window => {
+	console.log("Active: ", window)
 })
 ```
 This should output an object of Window Class properties. See the package used below to view the methods.

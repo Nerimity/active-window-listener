@@ -1,10 +1,10 @@
 
-const {ProcessListen, getWindows} = require("./dist");
+const {ProcessListener, getWindows} = require("./dist");
 
-const listener = new ProcessListen(["Discord.exe", "Telegram.exe", "Code.exe"]);
+const listener = new ProcessListener(["Discord.exe", "Telegram.exe", "Code.exe"]);
 
-listener.changed(data => {
-	console.log("Active: ", data)
+listener.on("change", window => {
+	console.log("Active: ", window)
 })
 
 

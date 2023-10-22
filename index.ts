@@ -2,10 +2,13 @@
 import { Window, windowManager } from 'node-window-manager';
 import EventEmitter from 'events';
 import {exiftool, Tags} from 'exiftool-vendored';
+import path from 'path';
 
 declare module "node-window-manager" {
 	interface Window {
 		getExif(): Promise<Tags> | undefined
+		lastFocusAt?: number
+		createdAt?: number
 	}
 }
 declare module "exiftool-vendored" {
@@ -14,95 +17,89 @@ declare module "exiftool-vendored" {
 	}
 }
 
-
 Window.prototype.getExif = function () {
 	return exiftool.read(this.path);
 }
 
+interface WindowDetails {createdAt: number, lastFocusAt: number, path: string}
 
+interface Events {
+  change: (window?: Window) => void
+}
 
+export class ProcessListener extends EventEmitter {
+	executableFilenames: Set<string>;
+	windowDetails = new Map<string, WindowDetails>();
+	lastActiveWindowCache: Window | undefined;
 
+	public on<K extends keyof Events>(e: K, listener: Events[K]): this { return super.on(e, listener); }
+  public emit<K extends keyof Events>(event: K, ...args: Parameters<Events[K]>): boolean {return super.emit(event, ...args)}
 
-export class ProcessListen {
-	eventEmitter: EventEmitter.EventEmitter;
-	processArr: string[];
-	activeWindow?: Window;
-	openedProcesses: Window[];
-	stopLoop: boolean;
-	constructor(processArr: string[]) {
-		this.eventEmitter = new EventEmitter.EventEmitter();
-		this.processArr = processArr;
-		this.activeWindow = undefined;
-		this.openedProcesses = [];
-		this.stopLoop = false;
+	constructor(executableFilenames: string[]) {
+		super();
+		this.executableFilenames = new Set(executableFilenames);
 		setTimeout(() => {
-			this.loop(true);
+			this.loop();	
 		});
+		setInterval(this.loop.bind(this), 5000);
+	}
+	lastActiveWindow() {
+		const windows = windowManager.getWindows();
+		return [...this.windowDetails.values()]
+			.filter(details => {
+				const filename = path.basename(details.path);
+				return this.executableFilenames.has(filename);
+			})
+			.sort((a, b) => {
+				return b.lastFocusAt - a.lastFocusAt
+			})
+			.map(details => {
+				const window = windows.find(w => w.path === details.path)!;
+				window.createdAt = details.createdAt;
+				window.lastFocusAt = details.lastFocusAt;
+				return window
+			})[0] as Window | undefined
 	}
 
-	clearEvent() {
-		this.eventEmitter.removeAllListeners('changed')
-		this.stopLoop = true;
+	addExecutable(filename: string) {
+		this.executableFilenames.add(filename);
+		this.loop();
 	}
-
-	changed(cb: (name?: Window) => void) {
-		this.eventEmitter.on("changed", window => {
-			if (!window) return cb(undefined);
-			cb(window)
-		})
+	removeExecutable(filename: string) {
+		this.executableFilenames.delete(filename);
+		this.loop();
 	}
-
-	private async loop(started?: boolean) {
-		if (this.stopLoop) return;
-
+	loop() {
 		const activeWindow = windowManager.getActiveWindow();
-		const processes = windowManager.getWindows();
-		const newOpenedProcesses = this.processArr.map(pa => {
-			return processes.find(p => {
-				return p.path.indexOf(pa, p.path.length - pa.length) != -1;
-			})
-		}).filter(pa => pa)
+		const windows = windowManager.getWindows();
 
-		const closedProgramsArr = this.openedProcesses.filter(x => {
-			return !newOpenedProcesses.find(a => a?.path === x.path)
-		});
-
-		if (!started) {
-			closedProgramsArr.forEach(cp => {
-				if (cp.path === this.activeWindow?.path) {
-					if (newOpenedProcesses.length) {
-						this.eventEmitter.emit('changed', newOpenedProcesses[0]);
-						this.activeWindow = newOpenedProcesses[0];
-					} else {
-						this.eventEmitter.emit('changed', undefined);
-						this.activeWindow = undefined
-					}
-				}
-			})
+		// add new details
+		for (let i = 0; i < windows.length; i++) {
+			const window = windows[i];
+			this.updateWindowDetails(window);
 		}
-
-
-		if ((!this.activeWindow || this.activeWindow.processId !== activeWindow.processId) && this.processArr.find(pa => activeWindow.path.indexOf(pa, activeWindow.path.length - pa.length) != -1)) {
-			this.eventEmitter.emit('changed', activeWindow);
-			this.activeWindow = activeWindow;
-		} else {
-
-
-			if (started) {
-				if (newOpenedProcesses.length) {
-					this.eventEmitter.emit('changed', newOpenedProcesses[0]);
-					this.activeWindow = newOpenedProcesses[0];
-				} else {
-					this.eventEmitter.emit('changed', undefined);
-				}
+		
+		// remove closed window details
+		this.windowDetails.forEach((details, path) => {
+			if (!windows.find(w => w.path === path)) {
+				this.windowDetails.delete(path);
 			}
-
-
-			this.openedProcesses = newOpenedProcesses as Window[];
+		})
+		if (this.lastActiveWindow()?.path !== activeWindow?.path) {
+			this.updateWindowDetails(activeWindow, true);
 		}
 
+		const newLastActiveWindow = this.lastActiveWindow();
 
-		setTimeout(() => this.loop(), 5000);
+		if (newLastActiveWindow?.path !== this.lastActiveWindowCache?.path) {
+			this.lastActiveWindowCache = newLastActiveWindow;
+			this.emit("change", newLastActiveWindow);
+		}
+	}
+	private updateWindowDetails(window: Window, forceUpdateFocusAt?: boolean) {
+		const obj = {...this.windowDetails.get(window.path) || {path: window.path, createdAt: Date.now()}} as WindowDetails;
+		(forceUpdateFocusAt || !obj.lastFocusAt) && (obj.lastFocusAt = Date.now());
+		this.windowDetails.set(window.path, obj);
 	}
 }
 
@@ -117,7 +114,7 @@ export function getWindows() {
 		if (arr.findIndex(w => w.path === window.path) + 1) continue;
 		const path = window.path.substring(3);
 		if (filteredFolder.find(f => path.startsWith(f))) continue;
-		if (window.getTitle() === "") continue;
+		if (!window.getTitle()?.trim()) continue;
 		if (!window.isWindow()) continue;
 		arr.push(window);
 	}
