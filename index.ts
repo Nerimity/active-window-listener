@@ -43,6 +43,18 @@ export class ProcessListener extends EventEmitter {
 		});
 		setInterval(this.loop.bind(this), 5000);
 	}
+	addExecutable(filename: string) {
+		this.executableFilenames.add(filename);
+		this.loop();
+	}
+	removeExecutable(filename: string) {
+		this.executableFilenames.delete(filename);
+		this.loop();
+	}
+	updateExecutableFilenames(executableFilenames: string[]) {
+		this.executableFilenames = new Set(executableFilenames);
+		this.loop();
+	}
 	lastActiveWindow() {
 		const windows = windowManager.getWindows();
 		return [...this.windowDetails.values()]
@@ -59,15 +71,6 @@ export class ProcessListener extends EventEmitter {
 				window.lastFocusAt = details.lastFocusAt;
 				return window
 			})[0] as Window | undefined
-	}
-
-	addExecutable(filename: string) {
-		this.executableFilenames.add(filename);
-		this.loop();
-	}
-	removeExecutable(filename: string) {
-		this.executableFilenames.delete(filename);
-		this.loop();
 	}
 	loop() {
 		const activeWindow = windowManager.getActiveWindow();
