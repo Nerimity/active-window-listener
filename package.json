@@ -1,6 +1,6 @@
 {
   "name": "@nerimity/active-window-listener",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "Listen to active windows by specifying them",
   "exports": "./dist/index.js",
   "types": "dist/index.d.ts",
