@@ -2,8 +2,9 @@
   "name": "@nerimity/active-window-listener",
   "version": "1.2.1",
   "description": "Listen to active windows by specifying them",
-  "main": "dist/index.js",
+  "exports": "./dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
@@ -24,12 +25,16 @@
   "license": "ISC",
   "dependencies": {
     "exiftool-vendored": "^14.6.2",
+    "get-windows": "^9.2.0",
     "node-window-manager": "^2.2.4"
   },
   "devDependencies": {
     "@types/luxon": "^1.27.1",
     "@types/node": "^20.8.7",
     "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "repository": {
     "type": "git",

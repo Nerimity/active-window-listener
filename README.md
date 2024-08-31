@@ -27,3 +27,6 @@ Mainly used to get all the active window information.
 https://github.com/sentialx/node-window-manager/
 Used to get File Description (Which is used to get the proper program name)
 https://www.npmjs.com/package/exiftool-vendored
+
+Used for linux.
+https://github.com/sindresorhus/get-windows

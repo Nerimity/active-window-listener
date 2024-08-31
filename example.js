@@ -1,5 +1,5 @@
 
-const {ProcessListener, getWindows} = require("./dist");
+import { ProcessListener, getWindows,  } from "./dist/index.js";
 
 const listener = new ProcessListener(["Discord.exe", "Telegram.exe", "Code.exe"]);
 
@@ -12,3 +12,5 @@ listener.on("change", window => {
 getWindows().forEach(w => {
 	w.getExif().then(tags => {console.log(tags.FileDescription)})
 })
+
+
