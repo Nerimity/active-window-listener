@@ -191,6 +191,8 @@ export class ProcessListenerLinux extends EventEmitter {
   }
   loop() {
     const activeWindow = activeWindowSync() as LinuxResultExtra;
+    // wayland returns undefined.
+    if (!activeWindow) return;
     const windows = openWindowsSync() as LinuxResultExtra[];
     if (!windows) return;
 
