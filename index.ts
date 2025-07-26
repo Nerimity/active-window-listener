@@ -173,6 +173,7 @@ export class ProcessListenerLinux extends EventEmitter {
     if (!windows) return undefined;
     return [...this.windowDetails.values()]
       .filter((details) => {
+        if (!details.path) return false;
         const filename = path.basename(details.path);
         return this.executableFilenames.has(filename);
       })
